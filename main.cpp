@@ -1,6 +1,7 @@
+//COMSC-210-5068， lab 24, Yang Liu
 #include <iostream>
 #include <fstream>
-#include <list>
+#include <set>
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
@@ -9,10 +10,9 @@ using namespace std;
 
 const int SZ_NAMES = 200, SZ_COLORS = 25, MAX_AGE = 20;
 
-int select_goat(list<Goat> trip);
-void delete_goat(list<Goat> &trip);
-void add_goat(list<Goat> &trip, string [], string []);
-void display_trip(list<Goat> trip);
+void delete_goat(set<Goat> &trip);
+void add_goat(set<Goat>& trip, string names[], string colors[]);
+void display_trip(set<Goat> trip);
 int main_menu();
 
 int main() {
@@ -31,7 +31,7 @@ int main() {
     while (fin1 >> colors[i++]);
     fin1.close();
 
-    list<Goat> trip;
+    set<Goat> trip;
 
     while (again) {
         int ch = main_menu();
@@ -62,16 +62,16 @@ int main_menu() {
     return choice;
 }
 
-void add_goat(list<Goat> &trip, string names[], string colors[]) {
+void add_goat(set<Goat> &trip, string names[], string colors[]) {
     int n = rand() % SZ_NAMES;
     int c = rand() % SZ_COLORS;
     int a = rand() % (MAX_AGE + 1);
     Goat g(names[n], a, colors[c]);
-    trip.push_back(g);
+    trip.insert(g);
     cout << endl;
 }
 
-void display_trip(list<Goat> trip) {
+void display_trip(set<Goat> trip) {
     cout << endl;
     int i = 1;
     for (Goat g : trip) {
@@ -81,21 +81,29 @@ void display_trip(list<Goat> trip) {
     cout << endl;
 }
 
-void delete_goat(list<Goat> &trip) {
+void delete_goat(set<Goat> &trip) {
     if (trip.empty()) {
         cout << endl;
         return;
     }
     cout << endl;
+
     int choice;
     display_trip(trip);
-    cout << "Choice --> ";
+    
+    cout << "Enter number to delete: ";
     cin >> choice;
-    while (choice < 1 || choice > trip.size()) {
-        cin >> choice;
+
+    int size = trip.size();
+    if (choice < 1 || choice > size) {
+        cout << "Invalid number!" << endl;
+        return;
     }
+
     auto it = trip.begin();
-    advance(it, choice - 1);
+    for (int i = 0; i < choice - 1; i++) {
+        it++;
+    }
     trip.erase(it);
     cout << endl;
 }
